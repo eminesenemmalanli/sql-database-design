@@ -1,0 +1,70 @@
+-- 2.1. Temel Veriler
+INSERT INTO lokasyon (isim) VALUES
+('Ýstanbul'),
+('Ankara'),
+('Ýzmir'),
+('Bursa'),
+('Antalya');
+
+INSERT INTO sektor (isim) VALUES
+('Bilgi Teknolojileri'),
+('Finans'),
+('Saðlýk'),
+('Eðitim'),
+('Üretim');
+
+INSERT INTO pozisyon(isim) VALUES
+('Yazýlým Geliþtirici'),
+('Finans Analisti'),
+('Pazarlama Uzmaný'),
+('Ýnsan Kaynaklarý Uzmaný'),
+('Proje Yöneticisi');
+
+-- DDL deðiþikliði (bir kere çalýþtýr)
+ALTER TABLE aday MODIFY dogum_yili DATE NOT NULL;
+
+-- 2.2. Kullanýcý/Kurum Verileri
+INSERT INTO aday (isim, soyisim, dogum_yili, telefon_no, sifre_hash, lokasyon, email) VALUES
+('Ayþe', 'Yýlmaz', '1995-05-15', '5321112233', 'hash123aday1', 1, 'ayse.yilmaz@mail.com'),
+('Mehmet', 'Kaya', '1990-10-20', '5449998877', 'hash123aday2', 2, 'mehmet.kaya@mail.com'),
+('Elif', 'Demir', '1998-03-01', '5554443322', 'hash123aday3', 3, 'elif.demir@mail.com'),
+('Ali', 'Öztürk', '2001-07-25', '5056667788', 'hash123aday4', 4, 'ali.ozturk@mail.com'),
+('Zeynep', 'Çelik', '1988-12-10', '5421234567', 'hash123aday5', 5, 'zeynep.celik@mail.com');
+
+INSERT INTO sirket (isim, sicil_no, sifre_hash, sektor, lokasyon, email) VALUES
+('Tekno Çözümler A.Þ.', 'TCSL2023000001', 'hash123sirket1', 1, 1, 'info@teknocozumler.com'),
+('Finans Destek Ltd.', 'FNDS2023000002', 'hash123sirket2', 2, 2, 'iletisim@finansdestek.com'),
+('Eðitim Geliþim Merkezi', 'EGGM2023000003', 'hash123sirket3', 4, 3, 'kariyer@egitimkurumu.com'),
+('Saðlýklý Yaþam Hastanesi', 'SGYH2023000004', 'hash123sirket4', 3, 5, 'ik@sagliyasam.com'),
+('Global Üretim Fabrikasý', 'GLBF2023000005', 'hash123sirket5', 5, 4, 'admin@globaluretim.com');
+
+-- 2.3. Belge ve Ýlan Verileri
+INSERT INTO cv (aday_id, dosya) VALUES
+(1, '{"deneyim": "5 yýl", "egitim": "Lisans", "yetenekler": ["Java", "SQL"]}'),
+(2, '{"deneyim": "8 yýl", "egitim": "Yüksek Lisans", "yetenekler": ["Muhasebe", "Vergi"]}'),
+(3, '{"deneyim": "2 yýl", "egitim": "Lisans", "yetenekler": ["Dijital Pazarlama", "SEO"]}'),
+(4, '{"deneyim": "Staj", "egitim": "Önlisans", "yetenekler": ["Temel Bilgisayar", "Ýletiþim"]}'),
+(5, '{"deneyim": "10 yýl", "egitim": "Lisans", "yetenekler": ["Bordrolama", "Ýþe Alým"]}');
+
+INSERT INTO ilan (sirket_id, pozisyon, lokasyon, calisma_tipi, maas_min, maas_max, sektor, baslik, aciklama, aktif_mi, son_basvuru_tarihi, egitim_durumu) VALUES
+(1, 1, 1, 'Tam zamanlý', 35000, 50000, 1, 'Kýdemli Yazýlým Geliþtirici Arýyoruz', 'Java ve Spring bilen, en az 3 yýl deneyimli', 1, '2025-01-31', 'lisans'),
+(2, 2, 2, 'Hibrit', 28000, 40000, 2, 'Finansal Raporlama Uzmaný', 'Aylýk ve yýllýk raporlamalarda görev alacak', 1, '2025-02-15', 'yüksek lisans'),
+(3, 4, 3, 'Yarý zamanlý', 15000, 20000, 4, 'Öðrenci Ýþleri Asistaný', 'Üniversite öðrencisi yarý zamanlý çalýþma arkadaþý', 1, '2025-01-20', 'önlisans'),
+(4, 3, 5, 'Staj', 0, 5000, 3, 'Yaz Dönemi Stajyeri', 'Halkla iliþkiler departmanýnda staj yapacak öðrenci', 1, '2025-03-01', 'lise'),
+(5, 5, 4, 'Tam zamanlý', 45000, 60000, 5, 'Deneyimli Proje Yöneticisi', 'Üretim süreçlerinde tecrübeli', 0, '2024-12-31', 'lisans');
+
+-- Ýlan ID'leri 1..5 olduðundan baþvurular da ona göre:
+INSERT INTO basvuru (ilan_id, durum, cv_id) VALUES
+(1, 'Deðerlendiriliyor', 1),
+(2, 'Kabul edildi', 2),
+(3, 'Reddedildi', 3),
+(4, 'Deðerlendiriliyor', 4),
+(5, 'Deðerlendiriliyor', 5);
+
+-- Basvuru ID'leri 1..5 olduðundan mesajlar da ona göre:
+INSERT INTO mesaj (basvuru_id, gonderen_tipi, gonderen_id, alici_tipi, alici_id, icerik) VALUES
+(1, 'SIRKET', 1, 'ADAY', 1, 'CVnizi inceledik, ön mülakat için size ulaþacaðýz.'),
+(1, 'ADAY', 1, 'SIRKET', 1, 'Teþekkür ederim, bekliyorum.'),
+(2, 'SIRKET', 2, 'ADAY', 2, 'Tebrikler, pozisyon için kabul edildiniz.'),
+(3, 'SIRKET', 3, 'ADAY', 3, 'Baþvurunuz için teþekkür ederiz, bu seferlik ilerleyemiyoruz.'),
+(4, 'ADAY', 4, 'SIRKET', 1, 'Ýlanýnýzdaki maaþ aralýðý stajyerler için de geçerli midir?');

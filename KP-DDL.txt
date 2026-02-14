@@ -1,0 +1,84 @@
+CREATE TABLE lokasyon( 
+    id INT AUTO_INCREMENT PRIMARY KEY, 
+    isim VARCHAR(255) 
+);
+
+CREATE TABLE sektor( 
+    id INT AUTO_INCREMENT PRIMARY KEY, 
+    isim VARCHAR(255) 
+);
+
+CREATE TABLE pozisyon(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    isim VARCHAR(255)
+);
+
+CREATE TABLE aday( 
+    id BIGINT AUTO_INCREMENT PRIMARY KEY, 
+    isim VARCHAR(50) NOT NULL, 
+    soyisim VARCHAR(50) NOT NULL, 
+    dogum_yili INT NOT NULL, 
+    telefon_no VARCHAR(15) NOT NULL, 
+    sifre_hash VARCHAR(255) NOT NULL,
+    kayit_tarihi DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    lokasyon INT, 
+    email VARCHAR(255) UNIQUE NOT NULL 
+);
+
+CREATE TABLE sirket( 
+    id BIGINT AUTO_INCREMENT PRIMARY KEY, 
+    isim VARCHAR(100) NOT NULL, 
+    sicil_no CHAR(16) NOT NULL UNIQUE, 
+    sifre_hash VARCHAR(255) NOT NULL, 
+    sektor INT, 
+    lokasyon INT, 
+    email VARCHAR(255) UNIQUE NOT NULL, 
+    kayit_tarihi DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP 
+);
+
+CREATE TABLE cv( 
+    id BIGINT AUTO_INCREMENT PRIMARY KEY, 
+    aday_id BIGINT NOT NULL, 
+    dosya JSON, 
+    FOREIGN KEY(aday_id) REFERENCES aday(id) ON DELETE CASCADE 
+);
+
+CREATE TABLE ilan(
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    sirket_id BIGINT NOT NULL,
+    pozisyon INT,
+    lokasyon INT,
+    calisma_tipi ENUM('Yarý zamanlý', 'Tam zamanlý', 'Staj', 'Uzaktan', 'Hibrit', 'Serbest', 'Sözleþmeli', 'Dönemsel', 'Proje bazlý'),
+    maas_min DECIMAL(10, 0),
+    maas_max DECIMAL(10, 0),
+    sektor INT,
+    baslik VARCHAR(100) NOT NULL,
+    aciklama VARCHAR(255),
+    aktif_mi TINYINT(1) NOT NULL,
+    olusturma_tarihi DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    son_basvuru_tarihi DATE NOT NULL,
+    egitim_durumu ENUM('ortaokul', 'lise', 'lisans', 'önlisans', 'yüksek lisans', 'akademi', 'diðer'),
+    FOREIGN KEY (sirket_id) REFERENCES sirket(id) ON DELETE CASCADE
+);
+
+CREATE TABLE basvuru( 
+    id BIGINT AUTO_INCREMENT PRIMARY KEY, 
+    ilan_id BIGINT NOT NULL, 
+    tarih DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, 
+    durum ENUM ('Deðerlendiriliyor', 'Kabul edildi', 'Reddedildi'), 
+    cv_id BIGINT NOT NULL, 
+    FOREIGN KEY(ilan_id) REFERENCES ilan(id) ON DELETE CASCADE, 
+    FOREIGN KEY(cv_id) REFERENCES cv(id) ON DELETE CASCADE 
+);
+
+CREATE TABLE mesaj( 
+    id BIGINT AUTO_INCREMENT PRIMARY KEY, 
+    basvuru_id BIGINT NOT NULL, 
+    gonderen_tipi ENUM('SIRKET', 'ADAY') NOT NULL, 
+    gonderen_id BIGINT NOT NULL, 
+    alici_tipi ENUM('SIRKET', 'ADAY') NOT NULL, 
+    alici_id BIGINT NOT NULL, 
+    icerik TEXT NOT NULL, 
+    tarih DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, 
+    FOREIGN KEY(basvuru_id) REFERENCES basvuru(id) ON DELETE CASCADE 
+);
