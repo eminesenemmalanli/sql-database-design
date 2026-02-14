@@ -1,2 +1,2 @@
 # sql-database-design
-Kariyer Platformu veriabanı projesi
+Kariyer Platformu veritabanı projesi
